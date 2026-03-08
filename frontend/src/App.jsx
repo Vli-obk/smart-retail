@@ -6,7 +6,8 @@ import Clients from './pages/Clients';
 import Products from './pages/Products';
 import Alertes from './pages/Alertes';
 import Predictions from './pages/Predictions';
-import Sales from './pages/Sales'; // Khtarna Sales hit hiya li m-importya
+import Sales from './pages/Sales'; 
+import EnAttente from './pages/EnAttente';
 
 import Sidebar from './components/Sidebar';
 
@@ -61,6 +62,11 @@ function App() {
           path="/app/predictions" 
           element={isAuthenticated() ? <AdminLayout><Predictions /></AdminLayout> : <Navigate to="/login" />} 
         />
+
+        <Route 
+  path="/app/en-attente" 
+  element={isAuthenticated() ? <AdminLayout><EnAttente /></AdminLayout> : <Navigate to="/login" />} 
+/>
 
         {/* Redirect ay 7aja khera l Home */}
         <Route path="*" element={<Navigate to="/" />} />
