@@ -6,48 +6,41 @@ use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request): JsonResponse
-    {
-        $credentials = $request->only('email', 'password');
+public function login(LoginRequest $request): JsonResponse
+{
+    $credentials = $request->only('email', 'password');
+    $user = User::where('email', $credentials['email'])->first();
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        if (!$user->isAdmin()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Access denied. Admin role required.'
-            ], 403);
-        }
-
-        $token = JWTAuth::fromUser($user);
-
+    if (!$user || !Hash::check($credentials['password'], $user->password)) {
         return response()->json([
-            'success' => true,
-            'message' => 'Login successful',
-            'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role
-                ],
-                'token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => config('jwt.ttl') * 60
-            ]
-        ]);
+            'success' => false,
+            'message' => 'Invalid credentials'
+        ], 401);
     }
+
+    $token = JWTAuth::fromUser($user);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Login successful',
+        'data' => [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role // Hada houwa li ghadi i-goul l-React chkoune hada
+            ],
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => config('jwt.ttl') * 60
+        ]
+    ]);
+}
 
     public function logout(): JsonResponse
     {
@@ -108,4 +101,5 @@ class AuthController extends Controller
             ], 401);
         }
     }
+
 }

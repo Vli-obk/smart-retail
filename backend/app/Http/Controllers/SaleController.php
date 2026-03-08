@@ -32,24 +32,34 @@ class SaleController extends Controller
         ]);
     }
 
-    public function store(StoreSaleRequest $request): JsonResponse
-    {
-        try {
-            $sale = $this->saleService->createSale($request->validated());
+  // app/Http/Controllers/SaleController.php
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Sale recorded successfully',
-                'data' => new SaleResource($sale)
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 400);
-        }
+public function store(Request $request) {
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'required|integer|min:1',
+    ]);
+
+    $product = \App\Models\Product::find($request->product_id);
+
+    // T2kked men l-stock
+    if ($product->stock < $request->quantity) {
+        return response()->json(['message' => 'Stock insuffisant'], 422);
     }
 
+    // Séjjel l-vente
+    $sale = \App\Models\Sale::create([
+        'product_id' => $request->product_id,
+        'quantity' => $request->quantity,
+        'total_price' => $product->price * $request->quantity,
+        'sale_date' => now(),
+    ]);
+
+    // N9ess men l-stock dyal l-produit
+    $product->decrement('stock', $request->quantity);
+
+    return response()->json(['message' => 'Vente enregistrée', 'data' => $sale]);
+}
     public function show(int $id): JsonResponse
     {
         $sale = $this->saleService->getSaleById($id);
