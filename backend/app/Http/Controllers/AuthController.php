@@ -19,7 +19,7 @@ public function login(LoginRequest $request): JsonResponse
     if (!$user || !Hash::check($credentials['password'], $user->password)) {
         return response()->json([
             'success' => false,
-            'message' => 'Invalid credentials'
+           'message' => 'Identifiants invalides. Veuillez réessayer.'
         ], 401);
     }
 

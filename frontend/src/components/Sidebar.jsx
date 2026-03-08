@@ -60,10 +60,10 @@ const Sidebar = () => {
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors text-blue-400 font-medium"
             >
               <Users size={20}/>
-              <span>Gestion Clients</span>
+              <span>Gestion de Stock Manager</span>
             </Link>
             <Link 
-              to="/app/predictions" 
+             to="/app/en-attente"
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors text-blue-400 font-medium"
             >
               <TrendingUp size={20}/>
