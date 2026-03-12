@@ -11,19 +11,25 @@ import EnAttente from './pages/EnAttente';
 
 import Sidebar from './components/Sidebar';
 
-function App() {
-  // Fonction bach n-choufou wach l-admin dakhil
-  const isAuthenticated = () => !!localStorage.getItem('token');
+// Helper to check auth
+const isAuthenticated = () => {
+  const token = localStorage.getItem('token');
+  return token && token !== 'undefined' && token !== 'null';
+};
 
-  // Layout li kiy-khli Sidebar i-ban dima f l-Admin
-  const AdminLayout = ({ children }) => (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1 overflow-y-auto min-h-screen">
+// Layout component moved outside to prevent re-creation on every render
+const AdminLayout = ({ children }) => (
+  <div className="flex bg-slate-50 min-h-screen">
+    <Sidebar />
+    <main className="flex-1 min-w-0 overflow-y-auto">
+      <div className="h-full">
         {children}
       </div>
-    </div>
-  );
+    </main>
+  </div>
+);
+
+function App() {
 
   return (
     <Router>

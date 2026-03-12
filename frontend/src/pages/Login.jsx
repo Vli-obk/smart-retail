@@ -1,30 +1,32 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, ArrowLeft, Loader2, Sparkles, UserCheck } from 'lucide-react';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false); // Zdt hadi bach t-ban l-bouton k-t-f-kker
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Auto-redirect if already logged in
+    React.useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token && token !== 'undefined') {
+            navigate('/app/dashboard');
+        }
+    }, [navigate]);
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
         try {
-            // Envoi des données au backend Laravel
             const response = await api.post('auth/login', formData);
-            
-            // Stockage des informations de l'utilisateur et du token
             localStorage.setItem('user', JSON.stringify(response.data.data.user)); 
             localStorage.setItem('token', response.data.data.token);
-            
-            // Redirection vers le Dashboard en cas de succès
             navigate('/app/dashboard');
         } catch (err) {
-            // --- HNA FIN BEDDELNA L-MESSAGE L L-FRANÇAIS ---
             setError('Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.');
         } finally {
             setLoading(false);
@@ -32,62 +34,95 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100">
-            <form onSubmit={handleLogin} className="p-8 bg-white rounded-lg shadow-xl w-96 border-t-4 border-blue-600">
-                <h2 className="text-3xl font-extrabold mb-2 text-center text-blue-600">Smart Retail AI</h2>
-                <p className="text-gray-500 text-center mb-6 text-sm">Accès sécurisé à l'espace administration</p>
-                
-                {/* Message d'erreur en français */}
-                {error && (
-                    <div className="text-red-600 text-sm mb-4 bg-red-50 p-3 rounded border border-red-200 text-center animate-shake">
-                        {error}
+        <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50 relative overflow-hidden">
+            {/* Animated Background Orbs */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-100/50 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-100/50 rounded-full blur-[120px] -z-10 -translate-x-1/2 translate-y-1/2 animate-pulse [animation-delay:1s]"></div>
+
+            <div className="w-full max-w-md animate-fade-in">
+                <div className="text-center mb-8 space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-bold text-xs uppercase tracking-wider mb-2">
+                        <UserCheck className="w-3.5 h-3.5" />
+                        Admin Gateway
                     </div>
-                )}
-
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2 uppercase tracking-wide">Adresse Email</label>
-                    <input 
-                        type="email" 
-                        placeholder="admin@smartretail.com" 
-                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
-                        onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                        required 
-                    />
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tight">Smart<span className="text-blue-600">Retail</span> AI</h1>
+                    <p className="text-slate-500 font-medium">Secure access to your enterprise dashboard</p>
                 </div>
 
-                <div className="mb-6">
-                    <label className="block text-gray-700 text-sm font-bold mb-2 uppercase tracking-wide">Mot de passe</label>
-                    <input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
-                        onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                        required 
-                    />
-                </div>
+                <div className="glass p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 border-white/40 ring-1 ring-black/5 backdrop-blur-2xl">
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        {error && (
+                            <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-sm font-semibold rounded-2xl animate-shake flex items-center gap-3">
+                                <div className="w-1.5 h-1.5 bg-red-500 rounded-full shrink-0"></div>
+                                {error}
+                            </div>
+                        )}
 
-                <button 
-                    type="submit" 
-                    disabled={loading}
-                    className={`w-full ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} text-white p-3 rounded-lg font-bold transition duration-300 shadow-md uppercase`}
-                >
-                    {loading ? 'Connexion en cours...' : 'Se Connecter'}
-                </button>
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                                    <Mail className="w-5 h-5" />
+                                </div>
+                                <input 
+                                    type="email" 
+                                    placeholder="admin@smartretail.com" 
+                                    className="w-full pl-12 pr-4 py-4 bg-white/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium" 
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                                    required 
+                                />
+                            </div>
+                        </div>
 
-                <div className="mt-8 text-center border-t pt-4">
-                    <button 
-                        type="button"
-                        onClick={() => navigate('/')}
-                        className="text-blue-600 text-xs font-semibold hover:underline"
-                    >
-                        &larr; Retour à l'accueil du site
-                    </button>
-                </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                                    <Lock className="w-5 h-5" />
+                                </div>
+                                <input 
+                                    type="password" 
+                                    placeholder="••••••••" 
+                                    className="w-full pl-12 pr-4 py-4 bg-white/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-900 font-medium" 
+                                    onChange={(e) => setFormData({...formData, password: e.target.value})} 
+                                    required 
+                                />
+                            </div>
+                        </div>
 
-                <div className="mt-4 text-center text-[10px] text-gray-400 uppercase">
-                    &copy; 2026 Smart Retail - Plateforme de Gestion IA
+                        <button 
+                            type="submit" 
+                            disabled={loading}
+                            className="w-full btn-primary !py-4 flex items-center justify-center gap-2 group disabled:opacity-70 disabled:hover:translate-y-0"
+                        >
+                            {loading ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    Authenticating...
+                                </>
+                            ) : (
+                                <>
+                                    Sign In to Dashboard
+                                    <Sparkles className="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                                </>
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col items-center gap-4">
+                        <button 
+                            onClick={() => navigate('/')}
+                            className="text-slate-400 hover:text-blue-600 text-sm font-bold flex items-center gap-2 transition-colors duration-300"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Return to homepage
+                        </button>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            &copy; 2026 Smart Retail AI - Enterprise Node
+                        </p>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };
