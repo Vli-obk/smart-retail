@@ -8,6 +8,7 @@ import Alertes from './pages/Alertes';
 import Predictions from './pages/Predictions';
 import Sales from './pages/Sales'; 
 import EnAttente from './pages/EnAttente';
+import RegisterClient from './pages/RegisterClient';
 
 import Sidebar from './components/Sidebar';
 
@@ -37,6 +38,7 @@ function App() {
         {/* 1. Pages bla Sidebar (Public) */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<RegisterClient />} />
 
         {/* 2. Pages dyal l-Admin (Protected with Sidebar) */}
         <Route 

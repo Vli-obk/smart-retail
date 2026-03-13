@@ -61,8 +61,8 @@ const Sales = () => {
         <div className="p-8 animate-fade-in space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Point of Sale</h1>
-                <p className="text-slate-500 font-medium">Record new transactions and monitor historical revenue streams.</p>
+                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Point de Vente</h1>
+                <p className="text-slate-500 font-medium">Enregistrez de nouvelles transactions et surveillez les flux de revenus historiques.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -75,12 +75,12 @@ const Sales = () => {
                             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/30">
                                 <PlusCircle size={20} />
                             </div>
-                            <h2 className="text-xl font-black text-slate-900 tracking-tight">New Order</h2>
+                            <h2 className="text-xl font-black text-slate-900 tracking-tight">Nouvelle Commande</h2>
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Select Asset</label>
+                                <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Sélectionner un Atout</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                         <Package size={18} />
@@ -91,16 +91,16 @@ const Sales = () => {
                                         onChange={(e) => setFormData({...formData, product_id: e.target.value})}
                                         required
                                     >
-                                        <option value="">Choose a product...</option>
+                                        <option value="">Choisir un produit...</option>
                                         {products.map(p => (
-                                            <option key={p.id} value={p.id}>{p.name} ({p.stock} in stock)</option>
+                                            <option key={p.id} value={p.id}>{p.name} ({p.stock} en stock)</option>
                                         ))}
                                     </select>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Quantity</label>
+                                <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Quantité</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                         <ArrowUpRight size={18} />
@@ -126,7 +126,7 @@ const Sales = () => {
                                     ) : (
                                         <>
                                             <Receipt size={20} />
-                                            Process Checkout
+                                            Encaisser la vente
                                         </>
                                     )}
                                 </button>
@@ -145,9 +145,9 @@ const Sales = () => {
 
                     <div className="p-6 bg-slate-900 rounded-[2.5rem] text-white flex items-center justify-between group overflow-hidden relative">
                          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-                         <div>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Payment Hub</p>
-                            <p className="font-bold text-sm">Secure Merchant Node</p>
+                          <div>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Hub de Paiement</p>
+                            <p className="font-bold text-sm">Nœud Marchand Sécurisé</p>
                          </div>
                          <CreditCard className="text-blue-500 w-8 h-8 group-hover:scale-110 transition-transform" />
                     </div>
@@ -160,19 +160,19 @@ const Sales = () => {
                             <div className="p-2.5 bg-slate-100 rounded-xl text-slate-500">
                                 <History size={20} />
                             </div>
-                            <h2 className="text-xl font-black text-slate-900 tracking-tight">Ledger History</h2>
+                            <h2 className="text-xl font-black text-slate-900 tracking-tight">Historique des Transactions</h2>
                         </div>
-                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{sales.length} Active Records</span>
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{sales.length} Enregistrements Actifs</span>
                     </div>
 
                     <div className="overflow-x-auto flex-1">
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="bg-slate-50/30">
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Transaction Asset</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Atout de Transaction</th>
                                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Volume</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Total Value</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] text-right">Timestamp</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Valeur Totale</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] text-right">Horodatage</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
@@ -203,9 +203,9 @@ const Sales = () => {
                                                 <div className="flex flex-col items-end">
                                                     <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                                                         <Calendar size={12} className="text-slate-300" />
-                                                        {new Date(s.created_at).toLocaleDateString()}
+                                                         {new Date(s.created_at).toLocaleDateString()}
                                                     </span>
-                                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Verified</span>
+                                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Vérifié</span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -213,7 +213,7 @@ const Sales = () => {
                                 ) : (
                                     <tr>
                                         <td colSpan="4" className="p-20 text-center text-slate-400 font-medium italic">
-                                            No recent transactions observed in the ledger.
+                                            Aucune transaction récente observée dans l'historique.
                                         </td>
                                     </tr>
                                 )}

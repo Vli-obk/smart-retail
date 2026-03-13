@@ -43,12 +43,12 @@ const Products = () => {
             {/* Header section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Product Inventory</h1>
-                    <p className="text-slate-500 font-medium">Manage and monitor your digital storefront architecture.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Inventaire des Produits</h1>
+                    <p className="text-slate-500 font-medium">Gérez et surveillez l'architecture de votre vitrine numérique.</p>
                 </div>
                 <button className="bg-blue-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-blue-700 transition-all font-bold shadow-lg shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0">
                     <Plus size={20} />
-                    Import New Asset
+                    Importer un Nouvel Atout
                 </button>
             </div>
 
@@ -60,7 +60,7 @@ const Products = () => {
                     </div>
                     <input 
                         type="text" 
-                        placeholder="Search assets by name or category..." 
+                        placeholder="Rechercher par nom ou catégorie..." 
                         className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium text-slate-900"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -69,11 +69,11 @@ const Products = () => {
                 <div className="flex items-center gap-2 w-full md:w-auto">
                     <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">
                         <Filter size={18} />
-                        Filter
+                        Filtrer
                     </button>
                     <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">
                         <ArrowUpDown size={18} />
-                        Sort
+                        Trier
                     </button>
                 </div>
             </div>
@@ -84,11 +84,11 @@ const Products = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50 border-b border-slate-100">
-                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest">Digital Asset</th>
+                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest">Atout Numérique</th>
                                 <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest">Classification</th>
-                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest">Valuation</th>
-                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest">Inventory Status</th>
-                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest text-right">Operations</th>
+                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest">Valorisation</th>
+                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest">État du Stock</th>
+                                <th className="p-6 font-black text-slate-400 text-xs uppercase tracking-widest text-right">Opérations</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -129,7 +129,7 @@ const Products = () => {
                                                     ></div>
                                                 </div>
                                                 <span className={`text-xs font-black uppercase ${p.stock < 10 ? 'text-rose-600' : 'text-emerald-600'}`}>
-                                                    {p.stock} units
+                                                    {p.stock} unités
                                                 </span>
                                             </div>
                                         </td>
@@ -155,9 +155,9 @@ const Products = () => {
                                             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
                                                 <AlertCircle size={40} />
                                             </div>
-                                            <div>
-                                                <p className="text-slate-900 font-black text-lg">No assets found</p>
-                                                <p className="text-slate-400 font-medium italic">Try adjusting your search filters</p>
+                                             <div>
+                                                <p className="text-slate-900 font-black text-lg">Aucun produit trouvé</p>
+                                                <p className="text-slate-400 font-medium italic">Essayez d'ajuster vos filtres de recherche</p>
                                             </div>
                                         </div>
                                     </td>
@@ -169,10 +169,10 @@ const Products = () => {
                 
                 {/* Pagination Placeholder */}
                 <div className="p-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Showing {filteredProducts.length} of {products.length} Results</p>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Affichage de {filteredProducts.length} sur {products.length} Résultats</p>
                     <div className="flex items-center gap-2">
-                        <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-400 disabled:opacity-50">Previous</button>
-                        <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-900 shadow-sm shadow-blue-500/5">Next</button>
+                        <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-400 disabled:opacity-50">Précédent</button>
+                        <button className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-900 shadow-sm shadow-blue-500/5">Suivant</button>
                     </div>
                 </div>
             </div>

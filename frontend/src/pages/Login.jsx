@@ -41,12 +41,8 @@ const Login = () => {
 
             <div className="w-full max-w-md animate-fade-in">
                 <div className="text-center mb-8 space-y-2">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-bold text-xs uppercase tracking-wider mb-2">
-                        <UserCheck className="w-3.5 h-3.5" />
-                        Admin Gateway
-                    </div>
                     <h1 className="text-4xl font-black text-slate-900 tracking-tight">Smart<span className="text-blue-600">Retail</span> AI</h1>
-                    <p className="text-slate-500 font-medium">Secure access to your enterprise dashboard</p>
+                    <p className="text-slate-500 font-medium">Accès sécurisé à votre tableau de bord</p>
                 </div>
 
                 <div className="glass p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 border-white/40 ring-1 ring-black/5 backdrop-blur-2xl">
@@ -59,7 +55,7 @@ const Login = () => {
                         )}
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                     <Mail className="w-5 h-5" />
@@ -75,7 +71,10 @@ const Login = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+                            <div className="flex justify-between items-center ml-1">
+                                <label className="text-sm font-bold text-slate-700">Mot de passe</label>
+                                <button type="button" className="text-xs font-bold text-blue-600 hover:text-blue-700">Mot de passe oublié ?</button>
+                            </div>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                     <Lock className="w-5 h-5" />
@@ -98,11 +97,11 @@ const Login = () => {
                             {loading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    Authenticating...
+                                    Authentification...
                                 </>
                             ) : (
                                 <>
-                                    Sign In to Dashboard
+                                    Se connecter au Tableau de Bord
                                     <Sparkles className="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity" />
                                 </>
                             )}
@@ -110,12 +109,21 @@ const Login = () => {
                     </form>
 
                     <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col items-center gap-4">
+                        <div className="flex flex-col items-center gap-1">
+                            <p className="text-sm font-medium text-slate-500">Êtes-vous un client ?</p>
+                            <button 
+                                onClick={() => navigate('/register')}
+                                className="text-blue-600 hover:text-blue-700 text-sm font-bold transition-colors duration-300"
+                            >
+                                Créer un compte client
+                            </button>
+                        </div>
                         <button 
                             onClick={() => navigate('/')}
                             className="text-slate-400 hover:text-blue-600 text-sm font-bold flex items-center gap-2 transition-colors duration-300"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            Return to homepage
+                            Retourner à l'accueil
                         </button>
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                             &copy; 2026 Smart Retail AI - Enterprise Node

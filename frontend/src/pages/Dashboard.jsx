@@ -162,12 +162,12 @@ const Dashboard = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Enterprise Overview</h1>
-                    <p className="text-slate-500 font-medium">Monitoring real-time performance and analytics.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Vue de l'Entreprise</h1>
+                    <p className="text-slate-500 font-medium">Surveillance des performances et analyses en temps réel.</p>
                 </div>
                 <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200">
-                    <button className="px-4 py-2 text-sm font-bold bg-slate-100 text-slate-900 rounded-xl">Real-time</button>
-                    <button className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">History</button>
+                    <button className="px-4 py-2 text-sm font-bold bg-slate-100 text-slate-900 rounded-xl">Temps Réel</button>
+                    <button className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors">Historique</button>
                 </div>
             </div>
 
@@ -197,16 +197,16 @@ const Dashboard = () => {
                 <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h2 className="text-xl font-black text-slate-900">Revenue Performance</h2>
+                            <h2 className="text-xl font-black text-slate-900">Performance des Revenus</h2>
                             <p className="text-sm text-slate-400 font-medium flex items-center gap-1.5 mt-1">
                                 <Clock className="w-3.5 h-3.5" />
-                                Values updated 5 minutes ago
+                                Valeurs mises à jour il y a 5 minutes
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
                              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 rounded-lg text-blue-600 text-xs font-bold ring-1 ring-blue-100">
                                 <CalendarDays className="w-3.5 h-3.5" />
-                                Last 7 Days
+                                7 Derniers Jours
                              </div>
                         </div>
                     </div>
@@ -219,35 +219,35 @@ const Dashboard = () => {
                 <div className="space-y-6">
                     <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white overflow-hidden relative group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-600/40 transition-colors"></div>
-                        <h2 className="text-xl font-bold mb-2 relative z-10">AI Predictor</h2>
-                        <p className="text-slate-400 text-sm mb-6 relative z-10 uppercase tracking-widest font-black">Powered by Fast API</p>
+                        <h2 className="text-xl font-bold mb-2 relative z-10">Prédicteur IA</h2>
+                        <p className="text-slate-400 text-sm mb-6 relative z-10 uppercase tracking-widest font-black">Propulsé par Fast API</p>
                         <div className="space-y-4 relative z-10">
                             <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                                <p className="text-xs text-slate-400 mb-1">Expected Tomorrow</p>
+                                <p className="text-xs text-slate-400 mb-1">Prévu pour Demain</p>
                                 <p className="text-xl font-black text-blue-400">+4,200 DH</p>
                             </div>
                             <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                                <p className="text-xs text-slate-400 mb-1">Stock Risk Level</p>
+                                <p className="text-xs text-slate-400 mb-1">Niveau de Risque Stock</p>
                                 <div className="flex items-center gap-2 mt-1">
                                     <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
                                         <div className="w-[15%] h-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                                     </div>
-                                    <span className="text-xs font-bold text-emerald-500 uppercase">SAFE</span>
+                                    <span className="text-xs font-bold text-emerald-500 uppercase">SÉCURISÉ</span>
                                 </div>
                             </div>
                         </div>
                         <button className="w-full mt-6 py-3 bg-white text-slate-900 font-black rounded-xl hover:bg-blue-50 transition-colors text-sm shadow-xl shadow-black/20">
-                            Run Smart Analysis
+                            Lancer une Analyse Intelligente
                         </button>
                     </div>
 
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-                        <h2 className="text-lg font-black text-slate-900 mb-4">Quick Actions</h2>
+                        <h2 className="text-lg font-black text-slate-900 mb-4">Actions Rapides</h2>
                         <div className="grid grid-cols-2 gap-3">
-                            <ActionButton label="Add Product" color="bg-blue-50 text-blue-600" />
-                            <ActionButton label="View Sales" color="bg-purple-50 text-purple-600" />
-                            <ActionButton label="Reports" color="bg-amber-50 text-amber-600" />
-                            <ActionButton label="Settings" color="bg-slate-50 text-slate-600" />
+                            <ActionButton label="Ajouter Produit" color="bg-blue-50 text-blue-600" />
+                            <ActionButton label="Voir Ventes" color="bg-purple-50 text-purple-600" />
+                            <ActionButton label="Rapports" color="bg-amber-50 text-amber-600" />
+                            <ActionButton label="Paramètres" color="bg-slate-50 text-slate-600" />
                         </div>
                     </div>
                 </div>

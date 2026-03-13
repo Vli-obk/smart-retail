@@ -12,8 +12,8 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
+    { name: 'Accueil', path: '/' },
+    { name: 'À Propos', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -55,7 +55,7 @@ const Navbar = () => {
               className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-all shadow-md active:scale-95"
             >
               <LogIn className="w-4 h-4" />
-              Admin Access
+              Login
             </NavLink>
           </div>
         </div>

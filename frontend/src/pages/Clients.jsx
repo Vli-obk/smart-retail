@@ -58,16 +58,16 @@ const Clients = () => {
         .then(res => res.json())
         .then(data => {
             if(data.success) {
-                alert("Manager request sent successfully! Access pending activation.");
+                alert("Demande envoyée avec succès ! Accès en attente d'activation.");
                 setFormData({ name: '', email: '', password: '' });
                 fetchClients(); 
             } else {
-                alert("Registration error: " + (data.message || "Invalid data"));
+                alert("Erreur d'enregistrement: " + (data.message || "Données invalides"));
             }
         })
         .catch(err => {
             console.error("Erreur Ajout:", err);
-            alert("Could not contact authentication node.");
+            alert("Impossible de contacter le noeud d'authentification.");
         })
         .finally(() => {
             setSubmitting(false);
@@ -80,13 +80,13 @@ const Clients = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                        Personnel Architecture
+                        Architecture du Personnel
                     </h1>
-                    <p className="text-slate-500 font-medium">Manage stock managers and infrastructure permissions.</p>
+                    <p className="text-slate-500 font-medium">Gérez les gestionnaires de stock et les permissions d'infrastructure.</p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest">Active Directory</span>
+                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest">Annuaire Actif</span>
                 </div>
             </div>
 
@@ -98,19 +98,19 @@ const Clients = () => {
                     <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-black/20">
                         <UserPlus size={20} />
                     </div>
-                    <h2 className="text-xl font-black text-slate-900 tracking-tight">Provision New Manager</h2>
+                    <h2 className="text-xl font-black text-slate-900 tracking-tight">Provisionner un Nouveau Gestionnaire</h2>
                 </div>
 
                 <form onSubmit={handleAddClient} className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
                     <div className="md:col-span-1 space-y-2">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] ml-1">Full Name</label>
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] ml-1">Nom Complet</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                 <User size={16} />
                             </div>
                             <input 
                                 type="text" 
-                                placeholder="Manager name" 
+                                placeholder="Nom du gestionnaire" 
                                 className="w-full pl-10 pr-4 py-3 bg-white/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-bold text-slate-900 text-sm" 
                                 value={formData.name} 
                                 onChange={(e) => setFormData({...formData, name: e.target.value})} 
@@ -120,7 +120,7 @@ const Clients = () => {
                     </div>
 
                     <div className="md:col-span-1 space-y-2">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] ml-1">Email Node</label>
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] ml-1">Noeud Email</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                 <Mail size={16} />
@@ -137,7 +137,7 @@ const Clients = () => {
                     </div>
 
                     <div className="md:col-span-1 space-y-2">
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] ml-1">Security Key</label>
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] ml-1">Clé de Sécurité</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                                 <Lock size={16} />
@@ -159,7 +159,7 @@ const Clients = () => {
                             disabled={submitting}
                             className="w-full bg-blue-600 text-white px-6 h-[46px] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 active:scale-95 disabled:opacity-50"
                         >
-                            {submitting ? 'Processing...' : 'Provision Account'}
+                            {submitting ? 'Traitement...' : 'Provisionner le Compte'}
                         </button>
                     </div>
                 </form>
@@ -175,7 +175,7 @@ const Clients = () => {
                             </div>
                             <input 
                                 type="text"
-                                placeholder="Search directory..."
+                                placeholder="Rechercher dans l'annuaire..."
                                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-xs font-bold"
                             />
                         </div>
@@ -190,10 +190,10 @@ const Clients = () => {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="bg-slate-50/50">
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Manager Identity</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Contact Node</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Access Token</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Operations</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Identité du Gestionnaire</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Noeud de Contact</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Jeton d'Accès</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Opérations</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -227,12 +227,12 @@ const Clients = () => {
                                                 {u.status === 'accepté' ? (
                                                     <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full flex items-center gap-1.5 border border-emerald-100">
                                                         <CheckCircle2 size={12} strokeWidth={3} />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">Authorized</span>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest">Autorisé</span>
                                                     </div>
                                                 ) : (
                                                     <div className="px-3 py-1 bg-amber-50 text-amber-600 rounded-full flex items-center gap-1.5 border border-amber-100">
                                                         <Clock size={12} strokeWidth={3} />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">Pending</span>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest">En attente</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -240,7 +240,7 @@ const Clients = () => {
                                         <td className="px-8 py-6 text-center">
                                             {u.status !== 'accepté' ? (
                                                 <button className="bg-slate-900 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg shadow-black/10 active:scale-95">
-                                                    Grant Access
+                                                    Accorder l'Accès
                                                 </button>
                                             ) : (
                                                 <button className="p-2 text-slate-300 hover:text-slate-600 transition-colors">
@@ -251,10 +251,10 @@ const Clients = () => {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan="4" className="p-20 text-center">
+                                         <td colSpan="4" className="p-20 text-center">
                                             <div className="flex flex-col items-center gap-2 opacity-30">
                                                 <ShieldCheck size={48} />
-                                                <p className="font-bold">No external managers found</p>
+                                                <p className="font-bold">Aucun gestionnaire externe trouvé</p>
                                             </div>
                                         </td>
                                     </tr>

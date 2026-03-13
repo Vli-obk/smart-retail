@@ -66,7 +66,7 @@ const Sidebar = () => {
       
       <nav className="flex-1 px-4 space-y-6">
         <div className="space-y-1">
-          <p className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] mb-4">Core Analytics</p>
+          <p className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] mb-4">Analyses Principales</p>
           {menuItems.map((item) => (
             <NavLink 
               key={item.name} 
@@ -89,7 +89,7 @@ const Sidebar = () => {
 
         {isAdmin && (
           <div className="space-y-1">
-             <p className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] mb-4">Intelligence & Data</p>
+             <p className="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] mb-4">Intelligence & Données</p>
             <NavLink 
               to="/app/clients" 
               className={({ isActive }) => `
@@ -100,7 +100,7 @@ const Sidebar = () => {
               `}
             >
               <Users size={18}/>
-              <span className="font-semibold text-sm flex-1">Stock Managers</span>
+              <span className="font-semibold text-sm flex-1">Gestionnaires</span>
               <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-40 transition-all" />
             </NavLink>
             <NavLink 
@@ -126,7 +126,7 @@ const Sidebar = () => {
           className="w-full flex items-center gap-3 px-4 py-3 text-red-400 font-bold text-sm hover:bg-red-500/10 rounded-xl transition-all duration-300 group"
         >
           <LogOut size={18} className="group-hover:-translate-x-0.5 transition-transform" />
-          <span>Secure Sign Out</span>
+          <span>Déconnexion Sécurisée</span>
         </button>
       </div>
     </aside>
