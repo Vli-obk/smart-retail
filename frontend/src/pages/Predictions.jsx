@@ -21,7 +21,7 @@ const Predictions = () => {
     return (
         <div className="p-8 ml-64 bg-slate-50 min-h-screen">
             <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <BrainCircuit className="text-blue-600" /> Smart Predictions (IA)
+                <BrainCircuit className="text-blue-600" /> AI Stock Predictor
             </h1>
 
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
@@ -36,7 +36,7 @@ const Predictions = () => {
                         </div>
                     </div>
                 ) : (
-                    <p className="text-center text-slate-400">Ajoutez plus de ventes pour activer l'IA.</p>
+                    <p className="text-center text-slate-400">En attendant la prédiction</p>
                 )}
             </div>
         </div>
