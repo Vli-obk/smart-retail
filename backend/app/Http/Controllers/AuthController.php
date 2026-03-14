@@ -2,104 +2,120 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-public function login(LoginRequest $request): JsonResponse
-{
-    $credentials = $request->only('email', 'password');
-    $user = User::where('email', $credentials['email'])->first();
-
-    if (!$user || !Hash::check($credentials['password'], $user->password)) {
-        return response()->json([
-            'success' => false,
-           'message' => 'Identifiants invalides. Veuillez réessayer.'
-        ], 401);
-    }
-
-    $token = JWTAuth::fromUser($user);
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Login successful',
-        'data' => [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role // Hada houwa li ghadi i-goul l-React chkoune hada
-            ],
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60
-        ]
-    ]);
-}
-
-    public function logout(): JsonResponse
+    /**
+     * Register a new user
+     */
+    public function register(Request $request): JsonResponse
     {
-        try {
-            JWTAuth::invalidate(JWTAuth::getToken());
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Successfully logged out'
-            ]);
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'sometimes|in:admin,stock_manager,client'
+        ]);
+
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to logout, please try again'
-            ], 500);
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
-    }
 
-    public function me(): JsonResponse
-    {
-        try {
-            $user = JWTAuth::user();
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role ?? 'client',
+            'status' => 'active'
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User registered successfully',
+            'data' => [
+                'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role
-                ]
-            ]);
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Token is invalid'
-            ], 401);
-        }
+                ],
+                'token' => $token
+            ]
+        ], 201);
     }
 
-    public function refresh(): JsonResponse
+    /**
+     * Login user and create token
+     */
+    public function login(Request $request): JsonResponse
     {
-        try {
-            $token = JWTAuth::refresh(JWTAuth::getToken());
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'token' => $token,
-                    'token_type' => 'bearer',
-                    'expires_in' => config('jwt.ttl') * 60
-                ]
-            ]);
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Could not refresh token'
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
             ], 401);
         }
+
+        if ($user->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Account is inactive'
+            ], 401);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'data' => [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role
+                ],
+                'token' => $token
+            ]
+        ]);
     }
 
+    /**
+     * Logout user (revoke token)
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully logged out'
+        ]);
+    }
 }
