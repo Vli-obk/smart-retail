@@ -13,7 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'admin_or_manager' => \App\Http\Middleware\AdminOrStockManagerMiddleware::class,
+            'client' => \App\Http\Middleware\ClientMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

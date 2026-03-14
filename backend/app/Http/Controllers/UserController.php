@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::where('role', 'stock_manager')->get();
         return response()->json([
             'success' => true, 
             'data' => $users
@@ -20,27 +20,70 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validation
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
         ]);
 
-        // 2. Creation dyal l-user b status 'en attente'
-        // Hada houwa l-logique dyal PFE bach l-admin i-valider
+        // Force role to stock_manager - admin can only create stock managers
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'client',
-            'status' => 'en attente', 
+            'role' => 'stock_manager',
+            'status' => $request->status ?? 'en_attente',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Demande d\'inscription envoyée avec succès',
+            'message' => 'Stock manager created successfully',
             'data' => $user
+        ]);
+    }
+
+    public function show($id)
+    {
+        $user = User::where('role', 'stock_manager')->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::where('role', 'stock_manager')->findOrFail($id);
+        
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,' . $id,
+            'password' => 'sometimes|min:6',
+            'status' => 'sometimes|in:active,inactive,en_attente',
+        ]);
+
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        }
+
+        // Keep role as stock_manager - admin cannot change it
+        $user->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Stock manager updated successfully',
+            'data' => $user
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $user = User::where('role', 'stock_manager')->findOrFail($id);
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Stock manager deleted successfully'
         ]);
     }
 }

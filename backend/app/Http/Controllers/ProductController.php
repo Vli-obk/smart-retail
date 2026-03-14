@@ -2,84 +2,145 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-use App\Http\Resources\ProductResource;
-use App\Services\ProductService;
+use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function __construct(private ProductService $service) {}
-
-    public function index(Request $request): JsonResponse
+    /**
+     * Display a listing of products
+     */
+    public function index(): JsonResponse
     {
-        $filters = $request->only(['category_id', 'search']);
-        $products = $this->service->getAll($filters);
+        try {
+            $products = Product::select('id', 'name', 'category', 'price', 'quantity', 'min_threshold')
+                ->orderBy('name')
+                ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => ProductResource::collection($products)
-        ]);
-    }
-
-    public function store(StoreProductRequest $request): JsonResponse
-    {
-        $product = $this->service->create($request->validated());
-        return response()->json([
-            'success' => true, 
-            'data' => new ProductResource($product->load('category'))
-        ], 201);
-    }
-
-    public function show($id): JsonResponse
-    {
-        $product = $this->service->getById($id);
-        if (!$product) {
+            return response()->json($products);
+        } catch (\Exception $e) {
             return response()->json([
-                'success' => false,
-                'message' => 'Product not found'
-            ], 404);
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created product
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
+            'min_threshold' => 'required|integer|min:0',
+            'description' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        return response()->json([
-            'success' => true, 
-            'data' => new ProductResource($product->load('category'))
-        ]);
+        try {
+            $product = Product::create($request->all());
+
+            return response()->json([
+                'id' => $product->id,
+                'name' => $product->name,
+                'category' => $product->category,
+                'price' => $product->price,
+                'quantity' => $product->quantity,
+                'min_threshold' => $product->min_threshold,
+                'description' => $product->description
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Server error'
+            ], 500);
+        }
     }
 
-    public function update(UpdateProductRequest $request, $id): JsonResponse
+    /**
+     * Update the specified product
+     */
+    public function update(Request $request, $id): JsonResponse
     {
-        $product = $this->service->getById($id);
-        if (!$product) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:255',
+            'category' => 'sometimes|required|string|max:255',
+            'price' => 'sometimes|required|numeric|min:0',
+            'quantity' => 'sometimes|required|integer|min:0',
+            'min_threshold' => 'sometimes|required|integer|min:0',
+            'description' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
             return response()->json([
-                'success' => false,
-                'message' => 'Product not found'
-            ], 404);
+                'errors' => $validator->errors()
+            ], 422);
         }
 
-        $updatedProduct = $this->service->update($product, $request->validated());
-        return response()->json([
-            'success' => true, 
-            'data' => new ProductResource($updatedProduct->load('category'))
-        ]);
+        try {
+            $product = Product::findOrFail($id);
+            $product->update($request->all());
+
+            return response()->json([
+                'id' => $product->id,
+                'name' => $product->name,
+                'category' => $product->category,
+                'price' => $product->price,
+                'quantity' => $product->quantity,
+                'min_threshold' => $product->min_threshold,
+                'description' => $product->description
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Product not found'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Server error'
+            ], 500);
+        }
     }
 
+    /**
+     * Remove the specified product
+     */
     public function destroy($id): JsonResponse
     {
-        $product = $this->service->getById($id);
-        if (!$product) {
+        try {
+            $product = Product::findOrFail($id);
+
+            // Check if product has pending orders
+            $hasPendingOrders = Order::whereHas('orderItems', function ($query) use ($id) {
+                $query->where('product_id', $id);
+            })->where('status', 'pending')->exists();
+
+            if ($hasPendingOrders) {
+                return response()->json([
+                    'message' => 'Cannot delete product with pending orders'
+                ], 422);
+            }
+
+            $product->delete();
+
+            return response()->json(null, 204);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
-                'success' => false,
                 'message' => 'Product not found'
             ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Server error'
+            ], 500);
         }
-
-        $this->service->delete($product);
-        return response()->json([
-            'success' => true, 
-            'message' => 'Product deleted successfully'
-        ]);
     }
 }

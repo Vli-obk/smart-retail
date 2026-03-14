@@ -7,30 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'category_id',
-        'name', 
-        'reference',
+        'name',
+        'category',
         'price',
-        'stock_quantity',
-        'stock_min',
-        'stock_max'
+        'quantity',
+        'min_threshold',
+        'description'
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'stock_quantity' => 'integer',
-        'stock_min' => 'integer',
-        'stock_max' => 'integer'
+        'quantity' => 'integer',
+        'min_threshold' => 'integer'
     ];
 
-    public function category()
+    // Relationships
+    public function orderItems()
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function sales()
-    {
-        return $this->hasMany(Sale::class);
+        return $this->hasMany(OrderItem::class);
     }
 
     public function stockMovements()
@@ -43,18 +37,31 @@ class Product extends Model
         return $this->hasMany(Alert::class);
     }
 
-    public function isLowStock()
+    public function predictions()
     {
-        return $this->stock_quantity <= $this->stock_min;
+        return $this->hasMany(Prediction::class);
     }
 
-    public function isOverstock()
+    // Methods
+    public function isLowStock()
     {
-        return $this->stock_quantity > $this->stock_max;
+        return $this->quantity <= $this->min_threshold;
     }
 
     public function hasSufficientStock(int $quantity): bool
     {
-        return $this->stock_quantity >= $quantity;
+        return $this->quantity >= $quantity;
+    }
+
+    public function decreaseStock(int $quantity)
+    {
+        $this->quantity -= $quantity;
+        $this->save();
+    }
+
+    public function increaseStock(int $quantity)
+    {
+        $this->quantity += $quantity;
+        $this->save();
     }
 }
