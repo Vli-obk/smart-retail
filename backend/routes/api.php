@@ -9,6 +9,16 @@ use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\PublicController;
+
+/*
+|--------------------------------------------------------------------------
+| Apply CORS Middleware Globally
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['cors'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +29,11 @@ use App\Http\Controllers\ContactController;
 // Authentication
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+
+// Public pages (no auth required)
+Route::get('/public/stats', [PublicController::class, 'stats']);
+Route::get('/public/features', [PublicController::class, 'features']);
+Route::get('/public/about', [PublicController::class, 'about']);
 
 // Contact form (public - anyone can send)
 Route::post('/contact', [ContactController::class, 'store']);
@@ -115,3 +130,4 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/client/orders', [OrderController::class, 'clientOrders']);
         });
     });
+});

@@ -56,7 +56,15 @@ class ContactSeeder extends Seeder
         ];
 
         foreach ($contacts as $contact) {
-            Contact::create($contact);
+            Contact::create([
+                'name' => $contact['name'],
+                'email' => $contact['email'],
+                'subject' => $contact['subject'],
+                'message' => $contact['message'],
+                'status' => $contact['status'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 }

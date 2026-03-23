@@ -12,8 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->use([
+            \App\Http\Middleware\HandleCors::class,
+        ]);
+        $middleware->statefulApi();
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'admin_or_manager' => \App\Http\Middleware\AdminOrStockManagerMiddleware::class,
             'client' => \App\Http\Middleware\ClientMiddleware::class,
