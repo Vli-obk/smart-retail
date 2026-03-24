@@ -27,15 +27,24 @@ const Sales = () => {
     }, []);
 
     const fetchInitialData = async () => {
+        setLoading(true);
         try {
-            const [prodRes, salesRes] = await Promise.all([
-                api.get('products'),
-                api.get('sales')
+            // Using /orders instead of /sales as that seems to be the backend route for sales/orders
+            const [prodRes, ordersRes] = await Promise.all([
+                api.get('/products'),
+                api.get('/orders') 
             ]);
-            setProducts(prodRes.data.data);
-            setSales(salesRes.data.data);
+            
+            const prodData = prodRes.data.data || prodRes.data;
+            const ordersData = ordersRes.data.data || ordersRes.data;
+            
+            setProducts(Array.isArray(prodData) ? prodData : []);
+            setSales(Array.isArray(ordersData) ? ordersData : []);
         } catch (err) { 
-            console.error("Erreur de chargement"); 
+            console.error("Erreur de chargement", err); 
+            // Fallback empty arrays if calls fail
+            setProducts([]);
+            setSales([]);
         } finally {
             setLoading(false);
         }
@@ -46,12 +55,21 @@ const Sales = () => {
         setSubmitting(true);
         setMessage(null);
         try {
-            await api.post('sales', formData);
-            setMessage({ type: 'success', text: 'Transaction completed successfully!' });
+            // Mapping UI 'sales' to backend 'orders' structure
+            // Controller expects { items: [{ product_id, quantity }] }
+            const orderPayload = {
+                items: [
+                   { product_id: parseInt(formData.product_id), quantity: parseInt(formData.quantity) }
+                ]
+            };
+            
+            await api.post('/orders', orderPayload);
+            setMessage({ type: 'success', text: 'Vente enregistrée avec succès ! (En attente de validation)' });
             setFormData({ product_id: '', quantity: 1 });
             fetchInitialData(); 
         } catch (err) {
-            setMessage({ type: 'error', text: err.response?.data?.message || 'Transaction failed.' });
+            console.error("Erreur Transaction:", err);
+            setMessage({ type: 'error', text: err.response?.data?.message || 'La transaction a échoué.' });
         } finally {
             setSubmitting(false);
         }
@@ -93,7 +111,7 @@ const Sales = () => {
                                     >
                                         <option value="">Choisir un produit...</option>
                                         {products.map(p => (
-                                            <option key={p.id} value={p.id}>{p.name} ({p.stock} en stock)</option>
+                                            <option key={p.id} value={p.id}>{p.name} ({p.stock || p.stock_current} en stock)</option>
                                         ))}
                                     </select>
                                 </div>
@@ -142,19 +160,10 @@ const Sales = () => {
                             </div>
                         )}
                     </div>
-
-                    <div className="p-6 bg-slate-900 rounded-[2.5rem] text-white flex items-center justify-between group overflow-hidden relative">
-                         <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-                          <div>
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Hub de Paiement</p>
-                            <p className="font-bold text-sm">Nœud Marchand Sécurisé</p>
-                         </div>
-                         <CreditCard className="text-blue-500 w-8 h-8 group-hover:scale-110 transition-transform" />
-                    </div>
                 </div>
 
                 {/* 2. Transaction History */}
-                <div className="lg:col-span-8 bg-white rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col">
+                <div className="lg:col-span-8 bg-white rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col overflow-hidden">
                     <div className="p-8 border-b border-slate-100 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2.5 bg-slate-100 rounded-xl text-slate-500">
@@ -166,11 +175,11 @@ const Sales = () => {
                     </div>
 
                     <div className="overflow-x-auto flex-1">
-                        <table className="w-full text-left">
+                        <table className="w-full text-left font-bold text-slate-600">
                             <thead>
                                 <tr className="bg-slate-50/30">
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Atout de Transaction</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Volume</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">N° Transaction</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Statut</th>
                                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Valeur Totale</th>
                                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] text-right">Horodatage</th>
                                 </tr>
@@ -188,24 +197,28 @@ const Sales = () => {
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
-                                                    <span className="font-bold text-slate-900">{s.product?.name || 'Asset Item'}</span>
+                                                    <span className="font-black text-slate-900 text-xs uppercase uppercase">#SR-{s.id.toString().padStart(4, '0')}</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <span className="font-bold text-slate-500">{s.quantity}</span>
+                                                 <span className={`px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-tighter ring-1 ${
+                                                   s.status === 'approved' ? 'bg-emerald-50 text-emerald-600 ring-emerald-100' : 
+                                                   s.status === 'pending' ? 'bg-amber-50 text-amber-600 ring-amber-100' : 'bg-rose-50 text-rose-600 ring-rose-100'
+                                                 }`}>
+                                                    {s.status === 'approved' ? 'Validée' : s.status === 'pending' ? 'En attente' : 'Annulée'}
+                                                </span>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="px-3 py-1 bg-blue-50 rounded-lg inline-block">
-                                                    <span className="text-blue-600 font-black text-sm">{s.total_price?.toLocaleString()} <span className="text-[10px] opacity-70">DH</span></span>
+                                                    <span className="text-blue-600 font-black text-sm">{s.total_amount?.toLocaleString()} <span className="text-[10px] opacity-70">DH</span></span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6 text-right">
                                                 <div className="flex flex-col items-end">
-                                                    <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                                                    <span className="text-xs font-black text-slate-900 flex items-center gap-1.5 uppercase">
                                                         <Calendar size={12} className="text-slate-300" />
-                                                         {new Date(s.created_at).toLocaleDateString()}
+                                                         {new Date(s.created_at).toLocaleDateString('fr-FR')}
                                                     </span>
-                                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Vérifié</span>
                                                 </div>
                                             </td>
                                         </tr>

@@ -25,18 +25,20 @@ const Products = () => {
     const fetchProducts = async () => {
         try {
             const res = await api.get('products');
-            setProducts(res.data.data);
+            const data = res.data.data || res.data;
+            setProducts(Array.isArray(data) ? data : []);
         } catch (err) { 
-            console.error("Erreur fetch products"); 
+            console.error("Erreur fetch products", err); 
+            setProducts([]);
         } finally {
             setLoading(false);
         }
     };
 
-    const filteredProducts = products.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.category?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredProducts = Array.isArray(products) ? products.filter(p => 
+        (p.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+        (p.category?.name?.toLowerCase() || p.category?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+    ) : [];
 
     return (
         <div className="p-8 animate-fade-in space-y-8">

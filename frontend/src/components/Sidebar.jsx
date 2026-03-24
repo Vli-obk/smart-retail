@@ -100,7 +100,7 @@ const Sidebar = () => {
               `}
             >
               <Users size={18}/>
-              <span className="font-semibold text-sm flex-1">Gestionnaires</span>
+              <span className="font-semibold text-sm flex-1">Gestion de Managers</span>
               <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-40 transition-all" />
             </NavLink>
             <NavLink 
