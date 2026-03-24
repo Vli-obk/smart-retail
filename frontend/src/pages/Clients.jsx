@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 import { 
   UserPlus, 
   ShieldCheck, 
@@ -9,7 +10,8 @@ import {
   Clock, 
   MoreHorizontal,
   Search,
-  Filter
+  Filter,
+  RefreshCw
 } from 'lucide-react';
 
 const Clients = () => {
@@ -20,58 +22,49 @@ const Clients = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        password: ''
+        password: '',
+        role: 'stock_manager' // Default role for creation
     });
 
-    const fetchClients = () => {
+    const fetchClients = async () => {
         setLoading(true);
-        fetch('http://localhost:8000/api/users')
-            .then(res => res.json())
-            .then(resData => {
-                if (resData && Array.isArray(resData.data)) {
-                    setClients(resData.data);
-                }
-            })
-            .catch(err => {
-                console.error("Erreur Fetch:", err);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        try {
+            const response = await api.get('/users');
+            const resData = response.data.data || response.data;
+            if (Array.isArray(resData)) {
+                // Filter out current admin for better display
+                setClients(resData.filter(u => u.role !== 'admin'));
+            }
+        } catch (err) {
+            console.error("Erreur Fetch Clients:", err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         fetchClients();
     }, []);
 
-    const handleAddClient = (e) => {
+    const handleAddClient = async (e) => {
         e.preventDefault();
         setSubmitting(true);
-        fetch('http://localhost:8000/api/users', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json' 
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                alert("Demande envoyée avec succès ! Accès en attente d'activation.");
-                setFormData({ name: '', email: '', password: '' });
+        try {
+            const response = await api.post('/users', formData);
+            if (response.data.success || response.status === 201 || response.status === 200) {
+                alert("Utilisateur créé avec succès !");
+                setFormData({ name: '', email: '', password: '', role: 'stock_manager' });
                 fetchClients(); 
             } else {
-                alert("Erreur d'enregistrement: " + (data.message || "Données invalides"));
+                alert("Erreur: " + (response.data.message || "Impossible de créer l'utilisateur"));
             }
-        })
-        .catch(err => {
+        } catch (err) {
             console.error("Erreur Ajout:", err);
-            alert("Impossible de contacter le noeud d'authentification.");
-        })
-        .finally(() => {
+            const errMsg = err.response?.data?.message || err.message || "Erreur de connexion";
+            alert("Erreur lors de l'enregistrement: " + errMsg);
+        } finally {
             setSubmitting(false);
-        });
+        }
     };
 
     return (
@@ -84,9 +77,17 @@ const Clients = () => {
                     </h1>
                     <p className="text-slate-500 font-medium">Gérez les gestionnaires de stock et les permissions d'infrastructure.</p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest">Annuaire Actif</span>
+                <div className="flex items-center gap-4">
+                    <button 
+                        onClick={fetchClients}
+                        className="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all active:scale-95 shadow-sm"
+                    >
+                        <RefreshCw size={18} className={loading ? 'animate-spin text-blue-500' : 'text-slate-400'} />
+                    </button>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span className="text-xs font-black text-slate-900 uppercase tracking-widest">Annuaire Actif</span>
+                    </div>
                 </div>
             </div>
 
@@ -187,12 +188,12 @@ const Clients = () => {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left font-bold text-slate-600">
                         <thead>
                             <tr className="bg-slate-50/50">
                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Identité du Gestionnaire</th>
                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Noeud de Contact</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Jeton d'Accès</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Etat d'Accès</th>
                                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Opérations</th>
                             </tr>
                         </thead>
@@ -204,9 +205,7 @@ const Clients = () => {
                                     </tr>
                                 ))
                             ) : Array.isArray(clients) && clients.length > 0 ? 
-                                clients
-                                .filter(u => u.role !== 'admin') 
-                                .map(u => (
+                                clients.map(u => (
                                     <tr key={u.id} className="group hover:bg-blue-50/20 transition-all duration-300">
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-4">
@@ -214,7 +213,7 @@ const Clients = () => {
                                                     <User size={18} />
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-slate-900 text-sm leading-none">{u.name}</p>
+                                                    <p className="font-black text-slate-900 text-sm leading-none">{u.name}</p>
                                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-1">{u.role || 'Staff'}</p>
                                                 </div>
                                             </div>
@@ -224,29 +223,23 @@ const Clients = () => {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
-                                                {u.status === 'accepté' ? (
+                                                {u.status === 'active' || u.status === 'accepté' ? (
                                                     <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full flex items-center gap-1.5 border border-emerald-100">
                                                         <CheckCircle2 size={12} strokeWidth={3} />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">Autorisé</span>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest">Actif</span>
                                                     </div>
                                                 ) : (
                                                     <div className="px-3 py-1 bg-amber-50 text-amber-600 rounded-full flex items-center gap-1.5 border border-amber-100">
                                                         <Clock size={12} strokeWidth={3} />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">En attente</span>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest">Inactif</span>
                                                     </div>
                                                 )}
                                             </div>
                                         </td>
                                         <td className="px-8 py-6 text-center">
-                                            {u.status !== 'accepté' ? (
-                                                <button className="bg-slate-900 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg shadow-black/10 active:scale-95">
-                                                    Accorder l'Accès
-                                                </button>
-                                            ) : (
-                                                <button className="p-2 text-slate-300 hover:text-slate-600 transition-colors">
-                                                    <MoreHorizontal size={20} />
-                                                </button>
-                                            )}
+                                            <button className="p-2 text-slate-300 hover:text-slate-600 transition-colors">
+                                                <MoreHorizontal size={20} />
+                                            </button>
                                         </td>
                                     </tr>
                                 )) : (

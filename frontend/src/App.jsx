@@ -9,6 +9,7 @@ import Predictions from './pages/Predictions';
 import Sales from './pages/Sales'; 
 import EnAttente from './pages/EnAttente';
 import RegisterClient from './pages/RegisterClient';
+import AdminDashboard from './pages/AdminDashboard';
 
 import Sidebar from './components/Sidebar';
 
@@ -43,7 +44,11 @@ function App() {
         {/* 2. Pages dyal l-Admin (Protected with Sidebar) */}
         <Route 
           path="/app/dashboard" 
-          element={isAuthenticated() ? <AdminLayout><Dashboard /></AdminLayout> : <Navigate to="/login" />} 
+          element={isAuthenticated() ? (
+            JSON.parse(localStorage.getItem('user'))?.role === 'admin' 
+              ? <AdminLayout><AdminDashboard /></AdminLayout> 
+              : <AdminLayout><Dashboard /></AdminLayout>
+          ) : <Navigate to="/login" />} 
         />
         
         <Route 

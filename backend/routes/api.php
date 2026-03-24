@@ -14,14 +14,6 @@ use App\Http\Controllers\PublicController;
 
 /*
 |--------------------------------------------------------------------------
-| Apply CORS Middleware Globally
-|--------------------------------------------------------------------------
-*/
-
-Route::middleware(['cors'])->group(function () {
-
-/*
-|--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
 */
@@ -130,4 +122,3 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/client/orders', [OrderController::class, 'clientOrders']);
         });
     });
-});
