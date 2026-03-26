@@ -5,7 +5,7 @@ import {
   ShoppingCart, 
   User, 
   Calendar, 
-  DollarSign, 
+  Banknote, 
   Package, 
   CheckCircle, 
   XCircle, 
@@ -258,7 +258,7 @@ const Orders = () => {
                         title: 'Revenu Total', 
                         value: `${stats.totalRevenue.toLocaleString()} DH`, 
                         prev: 0, 
-                        icon: <DollarSign className="w-5 h-5" />, 
+                        icon: <Banknote className="w-5 h-5" />, 
                         color: 'bg-violet-50 text-violet-600' 
                     },
                 ].map(({ title, value, prev, icon, color }) => (

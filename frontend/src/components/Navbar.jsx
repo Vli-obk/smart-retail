@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, ShoppingBag, Package, TrendingUp, Bell, LogIn } from 'lucide-react';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -13,9 +15,36 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Accueil', path: '/' },
-    { name: 'À Propos', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'À Propos', path: '/#about' },
+    { name: 'Contact', path: '/#contact' },
   ];
+
+  const handleNavClick = (e, path) => {
+    const isHash = path.startsWith('/#');
+    
+    if (location.pathname === '/') {
+      if (path === '/') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (isHash) {
+        e.preventDefault();
+        const id = path.substring(2);
+        const element = document.getElementById(id);
+        if (element) {
+          const offset = 80; // height of the navbar
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }
+    } else if (isHash) {
+      // If we're on a different page, just let the NavLink handle it,
+      // and our useEffect in Home.jsx will handle the scroll when it mounts.
+    }
+  };
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
@@ -23,7 +52,7 @@ const Navbar = () => {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30">
               <TrendingUp className="text-white w-6 h-6" />
             </div>
@@ -38,9 +67,10 @@ const Navbar = () => {
                 <NavLink
                   key={link.name}
                   to={link.path}
+                  onClick={(e) => handleNavClick(e, link.path)}
                   className={({ isActive }) => `
                     text-sm font-semibold transition-colors duration-200
-                    ${isActive ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}
+                    ${isActive && location.pathname === '/' ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}
                   `}
                 >
                   {link.name}

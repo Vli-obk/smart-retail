@@ -4,7 +4,7 @@ import {
   ShoppingBag, 
   Users, 
   AlertTriangle, 
-  DollarSign, 
+  Banknote, 
   TrendingUp, 
   ArrowUpRight, 
   ArrowDownRight,
@@ -72,7 +72,7 @@ const Dashboard = () => {
         { 
             title: 'Revenue Total', 
             value: `${Number(stats.total_revenue || 0).toLocaleString()} DH`, 
-            icon: <DollarSign className="w-6 h-6" />, 
+            icon: <Banknote className="w-6 h-6" />, 
             trend: '+12.5%', 
             trendUp: true,
             color: 'from-emerald-500 to-teal-600',

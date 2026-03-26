@@ -48,7 +48,10 @@ const Products = () => {
                     <h1 className="text-3xl font-black text-slate-900 tracking-tight">Inventaire des Produits</h1>
                     <p className="text-slate-500 font-medium">Gérez et surveillez l'architecture de votre vitrine numérique.</p>
                 </div>
-                <button className="bg-blue-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-blue-700 transition-all font-bold shadow-lg shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0">
+                <button 
+                    onClick={() => alert("Fonctionnalité d'importation bientôt disponible !")}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-blue-700 transition-all font-bold shadow-lg shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0"
+                >
                     <Plus size={20} />
                     Importer un Nouvel Atout
                 </button>

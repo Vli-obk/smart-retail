@@ -13,7 +13,7 @@ import {
   ArrowUpRight, 
   ArrowDownRight,
   Users,
-  DollarSign,
+  Banknote,
   Activity,
   Calendar,
   RefreshCw,
@@ -360,7 +360,7 @@ const StockManager = () => {
                                             <p>{order.time}</p>
                                         </div>
                                         <div className="text-sm font-medium text-gray-900">
-                                            €{order.totalAmount.toFixed(2)}
+                                            {order.totalAmount.toFixed(2)} DH
                                         </div>
                                         {order.urgency === 'high' && (
                                             <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
