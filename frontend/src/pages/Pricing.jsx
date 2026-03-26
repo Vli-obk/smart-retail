@@ -192,14 +192,17 @@ const Pricing = () => {
                                         <div className="mb-4">
                                             {plan.originalPrice && (
                                                 <span className="text-gray-400 line-through text-lg">
-                                                    {plan.originalPrice}€
+                                                    {plan.originalPrice} DH
                                                 </span>
                                             )}
                                             <div className="flex items-baseline justify-center gap-1">
                                                 <span className="text-5xl font-black text-gray-900">
                                                     {plan.price}
                                                 </span>
-                                                <span className="text-gray-600 font-medium">
+                                                <span className="text-gray-600 font-bold ml-1 text-xl self-end mb-1">
+                                                    DH
+                                                </span>
+                                                <span className="text-gray-600 font-medium ml-1">
                                                     /{billingCycle === 'monthly' ? 'mois' : 'an'}
                                                 </span>
                                             </div>

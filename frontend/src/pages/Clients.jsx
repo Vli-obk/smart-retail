@@ -223,17 +223,10 @@ const Clients = () => {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
-                                                {u.status === 'active' || u.status === 'accepté' ? (
-                                                    <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full flex items-center gap-1.5 border border-emerald-100">
-                                                        <CheckCircle2 size={12} strokeWidth={3} />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">Actif</span>
-                                                    </div>
-                                                ) : (
-                                                    <div className="px-3 py-1 bg-amber-50 text-amber-600 rounded-full flex items-center gap-1.5 border border-amber-100">
-                                                        <Clock size={12} strokeWidth={3} />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">Inactif</span>
-                                                    </div>
-                                                )}
+                                                <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full flex items-center gap-1.5 border border-emerald-100">
+                                                    <CheckCircle2 size={12} strokeWidth={3} />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest">Actif</span>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6 text-center">

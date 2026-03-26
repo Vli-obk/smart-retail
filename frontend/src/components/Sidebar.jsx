@@ -23,6 +23,7 @@ const Sidebar = () => {
   }
   
   const isAdmin = user?.role === 'admin';
+  const isClient = user?.role === 'client';
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -30,12 +31,18 @@ const Sidebar = () => {
     navigate('/login');
   };
 
-  const menuItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={18}/>, path: '/app/dashboard' },
-    { name: 'Produits', icon: <Package size={18}/>, path: '/app/products' },
-    { name: 'Ventes', icon: <ShoppingCart size={18}/>, path: '/app/sales' },
-    { name: 'Alertes', icon: <AlertTriangle size={18}/>, path: '/app/alerts' },
-  ];
+  const menuItems = isClient 
+    ? [
+        { name: 'Tableau de Bord', icon: <LayoutDashboard size={18}/>, path: '/app/dashboard' },
+        { name: 'Boutique', icon: <ShoppingCart size={18}/>, path: '/app/store' }, // Placeholder for store
+        { name: 'Paramètres', icon: <Settings size={18}/>, path: '/app/settings' },
+      ]
+    : [
+        { name: 'Dashboard', icon: <LayoutDashboard size={18}/>, path: '/app/dashboard' },
+        { name: 'Produits', icon: <Package size={18}/>, path: '/app/products' },
+        { name: 'Ventes', icon: <ShoppingCart size={18}/>, path: '/app/sales' },
+        { name: 'Alertes', icon: <AlertTriangle size={18}/>, path: '/app/alerts' },
+      ];
 
   return (
     <aside className="w-72 bg-slate-900 text-slate-300 h-screen flex flex-col border-r border-slate-800/50 sticky top-0 overflow-y-auto custom-scrollbar shadow-2xl">

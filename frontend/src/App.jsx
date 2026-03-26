@@ -10,16 +10,11 @@ import Sales from './pages/Sales';
 import EnAttente from './pages/EnAttente';
 import RegisterClient from './pages/RegisterClient';
 import AdminDashboard from './pages/AdminDashboard';
+import ClientDashboard from './pages/ClientDashboard';
 
 import Sidebar from './components/Sidebar';
 
-// Helper to check auth
-const isAuthenticated = () => {
-  const token = localStorage.getItem('token');
-  return token && token !== 'undefined' && token !== 'null';
-};
-
-// Layout component moved outside to prevent re-creation on every render
+// Layout component
 const AdminLayout = ({ children }) => (
   <div className="flex bg-slate-50 min-h-screen">
     <Sidebar />
@@ -30,6 +25,19 @@ const AdminLayout = ({ children }) => (
     </main>
   </div>
 );
+
+// Unified Protected Route component
+const ProtectedRoute = ({ children, adminOnly = false }) => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAuthenticated = token && token !== 'undefined' && token !== 'null';
+
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (adminOnly && user.role !== 'admin') return <Navigate to="/app/dashboard" replace />;
+  // Restrict stock manager certain pages if needed, but for now we focus on Client/Admin/StockManager
+  
+  return <AdminLayout>{children}</AdminLayout>;
+};
 
 function App() {
 
@@ -44,42 +52,24 @@ function App() {
         {/* 2. Pages dyal l-Admin (Protected with Sidebar) */}
         <Route 
           path="/app/dashboard" 
-          element={isAuthenticated() ? (
-            JSON.parse(localStorage.getItem('user'))?.role === 'admin' 
-              ? <AdminLayout><AdminDashboard /></AdminLayout> 
-              : <AdminLayout><Dashboard /></AdminLayout>
-          ) : <Navigate to="/login" />} 
+          element={
+            <ProtectedRoute>
+              {(() => {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.role === 'admin') return <AdminDashboard />;
+                if (user.role === 'client') return <ClientDashboard />;
+                return <Dashboard />;
+              })()}
+            </ProtectedRoute>
+          } 
         />
         
-        <Route 
-          path="/app/clients" 
-          element={isAuthenticated() ? <AdminLayout><Clients /></AdminLayout> : <Navigate to="/login" />} 
-        />
-
-        <Route 
-          path="/app/products" 
-          element={isAuthenticated() ? <AdminLayout><Products /></AdminLayout> : <Navigate to="/login" />} 
-        />
-
-        <Route 
-          path="/app/sales" 
-          element={isAuthenticated() ? <AdminLayout><Sales /></AdminLayout> : <Navigate to="/login" />} 
-        />
-
-        <Route 
-          path="/app/alerts" 
-          element={isAuthenticated() ? <AdminLayout><Alertes /></AdminLayout> : <Navigate to="/login" />} 
-        />
-
-        <Route 
-          path="/app/predictions" 
-          element={isAuthenticated() ? <AdminLayout><Predictions /></AdminLayout> : <Navigate to="/login" />} 
-        />
-
-        <Route 
-  path="/app/en-attente" 
-  element={isAuthenticated() ? <AdminLayout><EnAttente /></AdminLayout> : <Navigate to="/login" />} 
-/>
+        <Route path="/app/clients" element={<ProtectedRoute adminOnly><Clients /></ProtectedRoute>} />
+        <Route path="/app/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+        <Route path="/app/sales" element={<ProtectedRoute><Sales /></ProtectedRoute>} />
+        <Route path="/app/alerts" element={<ProtectedRoute><Alertes /></ProtectedRoute>} />
+        <Route path="/app/predictions" element={<ProtectedRoute><Predictions /></ProtectedRoute>} />
+        <Route path="/app/en-attente" element={<ProtectedRoute><EnAttente /></ProtectedRoute>} />
 
         {/* Redirect ay 7aja khera l Home */}
         <Route path="*" element={<Navigate to="/" />} />

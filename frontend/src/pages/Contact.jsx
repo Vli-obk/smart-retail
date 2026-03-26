@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
+import api from '../services/api';
 import { 
   Mail, 
   Phone, 
