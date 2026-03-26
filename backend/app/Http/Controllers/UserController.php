@@ -32,7 +32,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'stock_manager',
-            'status' => $request->status ?? 'en_attente',
+            'status' => $request->status ?? 'active',
         ]);
 
         return response()->json([
