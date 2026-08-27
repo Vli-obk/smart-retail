@@ -73,7 +73,6 @@ python app.py
 ## Contributors
 
 - [Ali (Vli-obk)](https://github.com/Vli-obk)
-- [AminaJeddou](https://github.com/AminaJeddou)
 
 ## Status
 
